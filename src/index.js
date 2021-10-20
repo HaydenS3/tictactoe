@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+//Creates square that will fill with props.value on click
 function Square(props) {
     return (
         <button
@@ -14,6 +15,7 @@ function Square(props) {
 
 
 function calculateWinner(squares) {
+    //Array of arrays
     const winCases = [
         [0, 1, 2],
         [3, 4, 5],
@@ -22,7 +24,9 @@ function calculateWinner(squares) {
         [1, 4, 7],
         [2, 5, 8],
         [2, 4, 6],
+        [0, 4, 8],
     ];
+    //Checks for winCase, return X or O for win, null for no win
     for (let i = 0; i < winCases.length; i++) {
         const [a, b, c] = winCases[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
@@ -33,6 +37,7 @@ function calculateWinner(squares) {
 }
 
 class Board extends React.Component {
+    //Not sure what this does?
     renderSquare(i) {
         return (
             <Square
@@ -42,6 +47,7 @@ class Board extends React.Component {
         );
     }
 
+    //Renders all 9 squares in their respective rows and columns
     render() {
         return (
             <div>
@@ -66,6 +72,7 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+    //Why do we need constructor and super?
     constructor(props) {
         super(props);
         this.state = {
@@ -80,14 +87,14 @@ class Game extends React.Component {
     handleClick(i) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        const squaresCpy = current.squares.slice();
-        if (calculateWinner(squaresCpy) || squaresCpy[i]) {
+        const squares = current.squares.slice();
+        if (calculateWinner(squares) || squares[i]) {
             return;
         }
-        squaresCpy[i] = this.state.xIsNext ? 'X' : 'O';
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
-                squares: squaresCpy,
+                squares: squares,
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
