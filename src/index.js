@@ -12,6 +12,26 @@ function Square(props) {
     );
 }
 
+
+function calculateWinner(squares) {
+    const winCases = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [2, 4, 6],
+    ];
+    for (let i = 0; i < winCases.length; i++) {
+        const [a, b, c] = winCases[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+        }
+    }
+    return null;
+}
+
 class Board extends React.Component {
     renderSquare(i) {
         return (
@@ -22,29 +42,9 @@ class Board extends React.Component {
         );
     }
 
-    calculateWinner(squares) {
-        const winCases = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [2, 4, 6],
-        ];
-        for (let i = 0; i < winCases.length; i++) {
-            const [a, b, c] = winCases[i];
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
-            }
-        }
-        return null;
-    }
-
     render() {
         return (
             <div>
-                <div className="status">{status}</div>
                 <div className="board-row">
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
@@ -80,22 +80,22 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squaresCpy = current.squares.slice();
-        if (this.calculateWinner(squaresCpy) || squaresCpy[i]) {
+        if (calculateWinner(squaresCpy) || squaresCpy[i]) {
             return;
         }
         squaresCpy[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
-                squares: squares,
+                squares: squaresCpy,
             }]),
             xIsNext: !this.state.xIsNext,
         });
     }
 
     render() {
-        const winner = this.calculateWinner(this.state.squares);
         const history = this.state.history;
         const current = history[history.length - 1];
+        const winner = calculateWinner(current.squares);
         let status;
         if (winner) {
             status = 'Winner: ' + winner;
@@ -127,3 +127,4 @@ ReactDOM.render(
     <Game />,
     document.getElementById('root')
 );
+
